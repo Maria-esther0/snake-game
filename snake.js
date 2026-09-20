@@ -8,9 +8,11 @@ let direction = "RIGHT";
 let a;
 let food = createFood();
 let poison = createPoison();
+//let poison = [];
 let score = 0;
 const scoreDisplay = document.getElementById("scoreValue");
 const startButton = document.getElementById("startButton");
+const levelMenu = document.getElementById("levelMenu");
 
 //fct pour verifier que la tete touche pas le corps
 function collision(head, array) {
@@ -26,6 +28,7 @@ function startGame() {
 	a = setInterval(draw, 100);//lance le jeu
 }
 startButton.addEventListener("click", startGame);
+draw(); //comme ça la map est pas vide avant de start game
 
 function createFood() {
 	let x = Math.floor(Math.random() * (canvas.width / gridSize)) * gridSize;
@@ -50,7 +53,7 @@ function createPoison() {
 	}
 	if (x === food.x && y === food.y) //check si pomme et poison sont pas au meme endroit
 		return createPoison
-	return { x: x, y: y };
+	return [{ x: x, y: y }];
 }
 
 function draw() {
@@ -81,7 +84,7 @@ function draw() {
 	ctx.fillRect(food.x, food.y, gridSize, gridSize);
 	//poison
 	ctx.fillStyle = "black";
-	ctx.fillRect(poison.x, poison.y, gridSize, gridSize);
+	ctx.fillRect(poison[0].x, poison[0].y, gridSize, gridSize);
 	let newHead = { x: snake[0].x, y: snake[0].y };
 
 	if (direction == "RIGHT") newHead.x += gridSize;
@@ -99,7 +102,7 @@ function draw() {
 	}
 	snake.unshift(newHead);
 
-	if (newHead.x === poison.x && newHead.y === poison.y) {
+	if (newHead.x === poison[0].x && newHead.y === poison[0].y) {
 		clearInterval(a);
 		setTimeout(() => {
 			alert("Game over! Cause of death: Poison");
@@ -111,7 +114,7 @@ function draw() {
 		newHead.y >= canvas.height || collision(newHead, snake)) {
 		clearInterval(a);
 		setTimeout(() => {
-			alert("Game over");
+			alert("Game over! Cause of death: Collision");
 			snake = [{ x: 120, y: 120 }];
 			direction = "RIGHT";
 			score = 0;
@@ -133,16 +136,13 @@ function resetGame() {
 }
 
 document.addEventListener("keydown", function (event) {
-	if (event.key === "ArrowUp" && direction !== "DOWN") {
+	if ((event.key === "ArrowUp" || event.key.toLowerCase() === "w") && direction !== "DOWN")
 		direction = "UP";
-	} else if (event.key === "ArrowDown" && direction !== "UP") {
+	else if ((event.key === "ArrowDown" || event.key.toLowerCase() === "s") && direction !== "UP")
 		direction = "DOWN";
-	} else if (event.key === "ArrowLeft" && direction !== "RIGHT") {
+	else if ((event.key === "ArrowLeft" || event.key.toLowerCase() === "a") && direction !== "RIGHT")
 		direction = "LEFT";
-	} else if (event.key === "ArrowRight" && direction !== "LEFT") {
+	else if ((event.key === "ArrowRight" || event.key.toLowerCase() === "d") && direction !== "LEFT")
 		direction = "RIGHT";
-	}
 });
 
-//boucle tous les 100ms
-//a = setInterval(draw, 100);
