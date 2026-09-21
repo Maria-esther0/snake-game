@@ -7,8 +7,8 @@ let snake = [
 let direction = "RIGHT";
 let a;
 let food = createFood();
-let poison = createPoison();
-//let poison = [];
+//let poison = createPoison();
+let poisons = spawnPoisons(3);
 let score = 0;
 const scoreDisplay = document.getElementById("scoreValue");
 const startButton = document.getElementById("startButton");
@@ -53,7 +53,20 @@ function createPoison() {
 	}
 	if (x === food.x && y === food.y) //check si pomme et poison sont pas au meme endroit
 		return createPoison
-	return [{ x: x, y: y }];
+
+	let poisonBody = [];
+	for (let i = 0; i < 1; i++) {
+		poisonBody.push({ x: x, y: y + (i * gridSize) });
+	}
+	return poisonBody;
+}
+
+function spawnPoisons(nbr) {
+	let allPoisons = [];
+	for (let i = 0; i < nbr; i++) {
+		allPoisons.push(createPoison());
+	}
+	return allPoisons;
 }
 
 function draw() {
@@ -84,7 +97,12 @@ function draw() {
 	ctx.fillRect(food.x, food.y, gridSize, gridSize);
 	//poison
 	ctx.fillStyle = "black";
-	ctx.fillRect(poison[0].x, poison[0].y, gridSize, gridSize);
+	for (let p = 0; p < poisons.length; p++) {
+		for (let i = 0; i < poisons[p].length; i++) {
+			ctx.fillRect(poisons[p][i].x, poisons[p][i].y, gridSize, gridSize);
+		}
+	}
+	//ctx.fillRect(poisons[0].x, poisons[0].y, gridSize, gridSize);
 	let newHead = { x: snake[0].x, y: snake[0].y };
 
 	if (direction == "RIGHT") newHead.x += gridSize;
@@ -96,18 +114,21 @@ function draw() {
 		score++;
 		scoreDisplay.innerText = score; //mise a jour du text
 		food = createFood();
-		poison = createPoison();
+		poisons = spawnPoisons(3);
 	} else {
 		snake.pop(); //
 	}
 	snake.unshift(newHead);
 
-	if (newHead.x === poison[0].x && newHead.y === poison[0].y) {
-		clearInterval(a);
-		setTimeout(() => {
-			alert("Game over! Cause of death: Poison");
-			resetGame();
-		}, 100);
+	for (let p = 0; p < poisons.length; p++) {
+		if (newHead.x === poisons[p][0].x && newHead.y === poisons[p][0].y) {
+			clearInterval(a);
+			setTimeout(() => {
+				alert("Game over! Cause of death: Poison");
+				resetGame();
+			}, 100);
+			return; //la fonction draw s'arrete car on a perdu
+		}
 	}
 
 	if (newHead.x < 0 || newHead.x >= canvas.width || newHead.y < 0 ||
@@ -130,7 +151,7 @@ function resetGame() {
 	score = 0;
 	scoreDisplay.innerText = score;
 	food = createFood();
-	poison = createPoison();
+	poisons = createPoison();
 	startButton.style.display = "block";
 	location.reload();
 }
