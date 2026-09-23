@@ -13,7 +13,7 @@ function resetGame() {
 	score = 0;
 	scoreDisplay.innerText = score;
 	food = createFood();
-	poisons = createPoison();
+	poisons = createPoison(3);
 	startButton.style.display = "block";
 	//location.reload();
 }
@@ -21,7 +21,7 @@ function resetGame() {
 function checkGameOver(newHead) {
 	// collision des poison
 	for (let p = 0; p < poisons.length; p++) {
-		if (newHead.x === poisons[p][0].x && newHeadge.y === poisons[p][0].y) {
+		if (newHead.x === poisons[p][0].x && newHead.y === poisons[p][0].y) {
 			return "Game over! Cause of death: Poison";
 		}
 	}

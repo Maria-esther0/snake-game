@@ -59,8 +59,17 @@ function updatePosition() {
 
 function draw_evtg() {
 	render();
-
 	let newHead = updatePosition();
+
+	let lossMessage = checkGameOver(newHead);
+	if (lossMessage) {
+		clearInterval(timer);
+		setTimeout(() => {
+			alert(lossMessage);
+			resetGame();
+		}, 100);
+		return;
+	}
 
 	//gerer nourriture
 	if (newHead.x === food.x && newHead.y === food.y) {
@@ -72,15 +81,6 @@ function draw_evtg() {
 		snake.pop();
 	}
 	snake.unshift(newHead);
-
-	let lossMessage = checkGameOver(newHead);
-	if (lossMessage) {
-		clearInterval(timer);
-		setTimeout(() => {
-			alert(lossMessage);
-			resetGame();
-		}, 100);
-	}
 }
 
 document.addEventListener("keydown", function (event) {
