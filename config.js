@@ -12,6 +12,8 @@ let food = null;
 //let poisons = spawnPoisons(3);
 let poisons = [];
 let score = 0;
+
+const bestScoreDisplay = document.getElementById("bestScore");
 const scoreDisplay = document.getElementById("scoreValue");
 const startButton = document.getElementById("startButton");
 const levelMenu = document.getElementById("levelMenu");

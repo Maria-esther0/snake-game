@@ -1,3 +1,18 @@
+//sauvegarde le score dans la memoire du navigateur
+function saveHighScore() {
+	let currentHighScore = parseInt(localStorage.getItem("snakeHighScore")) || 0;
+
+	//sauvagarde que si le score actuel est meilleur que l'ancien
+	if (score > currentHighScore) {
+		localStorage.setItem("snakeHighScore", score);
+	}
+}
+
+//recupère le score sauvegardé
+function loadHighScore() {
+	return (localStorage.getItem("snakeHighScore") || 0);
+}
+
 //fct pour verifier que la tete touche pas le corps
 function collision(head, array) {
 	for (let i = 1; i < array.length; i++) {
@@ -11,6 +26,7 @@ function resetGame() {
 	snake = [{ x: 120, y: 120 }];
 	direction = "RIGHT";
 	score = 0;
+	updateUI();
 	scoreDisplay.innerText = score;
 	food = createFood();
 	poisons = createPoison(3);

@@ -1,6 +1,12 @@
+function updateUI() {
+	scoreDisplay.innerHTML = score;
+	bestScoreDisplay.innerText = loadHighScore();
+}
+
 
 function startGame() {
 	startButton.style.display = "none";
+	//bestScoreDisplay.innerText = loadHighScore();
 
 	//reglé le problem de undefined ?
 	food = createFood();
@@ -61,12 +67,24 @@ function draw_evtg() {
 	render();
 	let newHead = updatePosition();
 
+	if (food && newHead.x === food.x && newHead.y === food.y) {
+		score++;
+		saveHighScore();
+		updateUI();
+		food = createFood();
+		poisons = spawnPoisons(3);
+	} else {
+		snake.pop();
+	}
+	snake.unshift(newHead);
+
 	let lossMessage = checkGameOver(newHead);
 	if (lossMessage) {
 		clearInterval(timer);
 		setTimeout(() => {
 			alert(lossMessage);
 			resetGame();
+			updateUI();
 		}, 100);
 		return;
 	}
@@ -74,7 +92,9 @@ function draw_evtg() {
 	//gerer nourriture
 	if (newHead.x === food.x && newHead.y === food.y) {
 		score++;
-		scoreDisplay.innerText = score;
+		//scoreDisplay.innerText = score;
+		saveHighScore();
+		updateUI();
 		food = createFood();
 		poisons = spawnPoisons(3);
 	} else {
@@ -97,10 +117,8 @@ document.addEventListener("keydown", function (event) {
 		direction = "RIGHT";
 });
 
+updateUI();
 draw_evtg(); //comme ça la map est pas vide avant de start game
 
 //moins de delais
 //plusieurs pommes
-//separer les fonctions
-//function draw_evtg()
-//fix poisons, serpent meurt pas
